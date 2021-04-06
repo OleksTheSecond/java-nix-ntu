@@ -9,71 +9,68 @@ import java.util.List;
 
 public class ConfDao extends AbstractDao {
     @Override
-    public boolean create(Object obj) {
+    public boolean create(Object obj) throws SQLException {
         Conference conference = (Conference) obj;
 
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement =
                      connection.prepareStatement(ConfDaoConstants.INSERT_CONF)) {
 
-            int k = 1;
-            preparedStatement.setInt(k++, conference.getConfId());
-            preparedStatement.setTimestamp(k++, conference.getStartTime());
-            preparedStatement.setTimestamp(k++, conference.getEndTime());
-            preparedStatement.setString(k++, conference.getPlace());
-            preparedStatement.setInt(k, conference.getReportsCount());
+            preparedStatement.setInt(1, conference.getConfId());
+            preparedStatement.setTimestamp(2, conference.getStartTime());
+            preparedStatement.setTimestamp(3, conference.getEndTime());
+            preparedStatement.setString(4, conference.getPlace());
+            preparedStatement.setInt(5, conference.getReportsCount());
             preparedStatement.execute();
+            return true;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw  new SQLException("Exception in ConfDao#create");
         }
-        return true;
+
     }
 
 
     //В базе Количество докладов должно работать по тригеру
     //добавился доклад с id конференции +1 к количеств там.
     @Override
-    public boolean update(Object obj) {
+    public boolean update(Object obj) throws SQLException {
         Conference conference = (Conference) obj;
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(ConfDaoConstants.UPDATE_CONF)) {
             int k = 1;
-            preparedStatement.setTimestamp(k++, conference.getStartTime());
-            preparedStatement.setTimestamp(k++, conference.getEndTime());
-            preparedStatement.setString(k++, conference.getPlace());
-            preparedStatement.setInt(k, conference.getConfId());
+            preparedStatement.setTimestamp(1, conference.getStartTime());
+            preparedStatement.setTimestamp(2, conference.getEndTime());
+            preparedStatement.setString(3, conference.getPlace());
+            preparedStatement.setInt(4, conference.getConfId());
             preparedStatement.execute();
+            return true;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw  new SQLException("Exception in ConfDao#update");
         }
-
-        return true;
     }
 
     @Override
-    public boolean delete(Object obj) {
+    public boolean delete(Object obj) throws SQLException{
         int id = ((Conference) obj).getConfId();
-        try (Connection connection = getConnection(URL,USER,PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(ConfDaoConstants.DELETE_CONF)) {
 
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
+            return true;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw  new SQLException("Exception in ConfDao#delete");
         }
-        return true;
+
     }
 
     @Override
-    public Object findById(int id) {
-        ResultSet resultSet;
-        try (Connection connection = getConnection(URL,USER,PASSWORD);
+    public Object findById(int id) throws SQLException {
+        ResultSet resultSet = null;
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(ConfDaoConstants.FIND_CONF)) {
 
              preparedStatement.setInt(1, id);
@@ -82,29 +79,32 @@ public class ConfDao extends AbstractDao {
              return mapConference(resultSet);
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            throw  new SQLException("Exception in ConfDao#findById");
         }
-        return null;
+        finally {
+            resultSet.close();
+        }
     }
 
     @Override
-    public List findAll() {
+    public List findAll() throws SQLException {
         List<Conference> conferenceList = new ArrayList<>();
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(ConfDaoConstants.FIND_ALL)) {
 
             while (resultSet.next()) {
                 conferenceList.add(mapConference(resultSet));
             }
+
+            return conferenceList;
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            throw  new SQLException("Exception in ConfDao#findAll");
         }
-        return conferenceList;
     }
 
-    private Conference mapConference(ResultSet resultSet) {
+    private Conference mapConference(ResultSet resultSet) throws SQLException {
         try {
             Conference conference
                     = new Conference(resultSet.getInt(ConfDaoConstants.CONF_ID),
@@ -115,8 +115,7 @@ public class ConfDao extends AbstractDao {
             return conference;
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            throw  new SQLException("Exception in ConfDao#mapConference");
         }
-        return null;
     }
 }
