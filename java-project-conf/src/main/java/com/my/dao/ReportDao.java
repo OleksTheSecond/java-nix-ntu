@@ -9,77 +9,83 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ReportDao extends AbstractDao{
-    public boolean create(Object obj) {
+
+    public boolean create(Object obj) throws SQLException {
         Report report = (Report) obj;
 
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(ReportDaoConstants.INSERT_REPORT)){
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(ReportDaoConstants.INSERT_REPORT)){
 
-            int k = 1;
-            preparedStatement.setInt(k++, report.getId());
-            preparedStatement.setString(k++, report.getTitle());
-            preparedStatement.setInt(k++, report.getUserId());
-            preparedStatement.setInt(k, report.getConferenceId());
+            preparedStatement.setInt(1, report.getId());
+            preparedStatement.setString(2, report.getTitle());
+            preparedStatement.setInt(3, report.getUserId());
+            preparedStatement.setInt(4, report.getConferenceId());
             preparedStatement.execute();
+            return true;
         }
         catch (SQLException ex) {
-            ex.printStackTrace();
-            return false;
+           throw new SQLException("Exception in ReportDao#create");
+
         }
-        return true;
+
     }
 
-    public boolean update(Object obj) {
+    public boolean update(Object obj) throws SQLException {
         Report report = (Report) obj;
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(ReportDaoConstants.UPDATE_REPORT)) {
-            int k = 1;
-            preparedStatement.setString(k++, report.getTitle());
-            preparedStatement.setInt(k++, report.getUserId());
-            preparedStatement.setInt(k++, report.getConferenceId());
-            preparedStatement.setInt(k, report.getId());
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(ReportDaoConstants.UPDATE_REPORT)) {
+
+            preparedStatement.setString(1, report.getTitle());
+            preparedStatement.setInt(2, report.getUserId());
+            preparedStatement.setInt(3, report.getConferenceId());
+            preparedStatement.setInt(4, report.getId());
             preparedStatement.execute();
+            return true;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new SQLException("Exception in ReportDao#update");
         }
-        return true;
+
     }
 
-    public boolean delete(Object obj) {
+    public boolean delete(Object obj) throws SQLException {
         int id = ((Report) obj).getId();
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
-             PreparedStatement preparedStatement = connection.prepareStatement(ReportDaoConstants.DELETE_REPORT)) {
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement =
+                     connection.prepareStatement(ReportDaoConstants.DELETE_REPORT)) {
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
-
+            return true;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new SQLException("Exception in ReportDao#delete");
         }
-        return true;
+
     }
 
-    public Object findById(int id) {
-        ResultSet resultSet;
-        try(Connection connection = getConnection(URL, USER, PASSWORD);
-            PreparedStatement preparedStatement = connection.prepareStatement(ReportDaoConstants.FIND_REPORT)) {
+    public Object findById(int id) throws SQLException {
+        ResultSet resultSet = null;
+        try(Connection connection = getConnection();
+            PreparedStatement preparedStatement =
+                    connection.prepareStatement(ReportDaoConstants.FIND_REPORT)) {
             preparedStatement.setInt(1, id);
             resultSet = preparedStatement.executeQuery();
             resultSet.next();
             return mapReport(resultSet);
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            throw new SQLException("Exception in ReportDao#findById");
+        }
+        finally {
+            resultSet.close();
         }
     }
 
-    public List findAll() {
+    public List findAll() throws SQLException {
         List<Report> reportList = new ArrayList<>();
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(ReportDaoConstants.FIND_ALL)) {
 
@@ -87,15 +93,14 @@ public class ReportDao extends AbstractDao{
                 reportList.add(mapReport(resultSet));
             }
 
+            return reportList;
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("Exception in ReportDao#findAll");
         }
-
-        return reportList;
     }
 
-    private Report mapReport(ResultSet resultSet) {
+    private Report mapReport(ResultSet resultSet) throws SQLException {
         try {
             Report report = new Report(resultSet.getInt(ReportDaoConstants.REPORT_ID),
                                        resultSet.getString(ReportDaoConstants.REPORT_TITLE),
@@ -104,8 +109,7 @@ public class ReportDao extends AbstractDao{
             return report;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+            throw new SQLException("Exception in ReportDao#mapReport");
         }
     }
 }
