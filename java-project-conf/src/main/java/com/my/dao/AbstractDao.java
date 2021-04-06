@@ -1,15 +1,22 @@
 package com.my.dao;
 
+import org.apache.commons.dbcp.BasicDataSource;
+
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 
 public abstract class AbstractDao implements Dao {
-    public static final String URL = "jdbc:h2:~/conf";
-    public static final String USER = "sa";
-    public static final String PASSWORD = "sa";
+    private static BasicDataSource ds = new BasicDataSource();
+    static {
+        ds.setUrl("jdbc:h2:~/conf");
+        ds.setUsername("sa");
+        ds.setPassword("sa");
+        ds.setMinIdle(5);
+        ds.setMaxIdle(10);
+        ds.setMaxOpenPreparedStatements(100);
+    }
 
-    public Connection getConnection(String connectionUrl, String user, String password) throws SQLException {
-        return DriverManager.getConnection(connectionUrl, user, password);
+    public Connection getConnection() throws SQLException {
+        return ds.getConnection();
     }
 }
