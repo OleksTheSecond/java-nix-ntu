@@ -4,6 +4,7 @@ import com.my.dao.UserDao;
 import com.my.domain.Roles;
 import com.my.domain.User;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class DemoUser {
@@ -14,7 +15,7 @@ public class DemoUser {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         User user1 = new User(1, "OleksII",
                 "Aleksieiev", Roles.MODERATOR.getRoleId());
 
