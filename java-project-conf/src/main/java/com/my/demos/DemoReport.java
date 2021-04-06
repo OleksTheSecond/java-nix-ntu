@@ -3,6 +3,7 @@ package com.my.demos;
 import com.my.dao.ReportDao;
 import com.my.domain.Report;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public class DemoReport {
@@ -13,7 +14,7 @@ public class DemoReport {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws SQLException {
         ReportDao reportDao = new ReportDao();
 
         Report report1 = new Report(1, "Title#1", 2);
