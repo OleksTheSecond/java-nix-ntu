@@ -7,63 +7,63 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDao extends AbstractDao{
-    public boolean create(Object obj) {
+public class UserDao extends AbstractDao {
+
+    public boolean create(Object obj) throws SQLException {
         User user = (User) obj;
 
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UserDaoConstants.INSERT_USER)){
 
-            int k = 1;
-            preparedStatement.setInt(k++, user.getUserId());
-            preparedStatement.setString(k++, user.getFirstName());
-            preparedStatement.setString(k++, user.getLastName());
-            preparedStatement.setInt(k, user.getRoleId());
+            preparedStatement.setInt(1, user.getUserId());
+            preparedStatement.setString(2, user.getFirstName());
+            preparedStatement.setString(3, user.getLastName());
+            preparedStatement.setInt(4, user.getRoleId());
             preparedStatement.execute();
+            return true;
         }
         catch (SQLException ex) {
-            System.out.println(ex.getMessage());
-            return false;
+           throw new SQLException("UserDao#create");
         }
-        return true;
+
     }
 
-    public boolean update(Object obj) {
+    public boolean update(Object obj) throws SQLException {
         User user = (User) obj;
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UserDaoConstants.UPDATE_USER)){
-            int k = 1;
-            preparedStatement.setString(k++, user.getFirstName());
-            preparedStatement.setString(k++, user.getLastName());
-            preparedStatement.setInt(k++, user.getRoleId());
-            preparedStatement.setInt(k, user.getUserId());
+
+            preparedStatement.setString(1, user.getFirstName());
+            preparedStatement.setString(2, user.getLastName());
+            preparedStatement.setInt(3, user.getRoleId());
+            preparedStatement.setInt(4, user.getUserId());
             preparedStatement.execute();
+            return true;
         }
         catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new SQLException("UserDao#update");
         }
-        return true;
+
     }
 
-    public boolean delete(Object obj) {
+    public boolean delete(Object obj) throws SQLException {
         int id = ((User) obj).getUserId();
 
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UserDaoConstants.DELETE_USER)){
 
             preparedStatement.setInt(1, id);
             preparedStatement.execute();
+            return true;
         } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
+            throw new SQLException("UserDao#delete");
         }
-        return true;
+
     }
 
-    public Object findById(int id) {
-        ResultSet resultSet;
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+    public Object findById(int id) throws SQLException {
+        ResultSet resultSet = null;
+        try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(UserDaoConstants.FIND_USER)){
 
             preparedStatement.setInt(1, id);
@@ -72,30 +72,33 @@ public class UserDao extends AbstractDao{
             return mapUser(resultSet);
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("UserDao#findById");
         }
-        return null;
+        finally {
+            resultSet.close();
+        }
+
     }
 
-    public List findAll() {
+    public List findAll() throws SQLException {
         List<User> userList = new ArrayList<>();
-        try (Connection connection = getConnection(URL, USER, PASSWORD);
+        try (Connection connection = getConnection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery(UserDaoConstants.FIND_ALL)) {
 
             while (resultSet.next()) {
                 userList.add(mapUser(resultSet));
             }
-
+            return userList;
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("UserDao#findAll");
         }
 
-        return userList;
+
     }
 
-    private User mapUser(ResultSet resultSet) {
+    private User mapUser(ResultSet resultSet) throws SQLException {
         try {
             User user = new User(resultSet.getInt(UserDaoConstants.USER_ID),
                                  resultSet.getString(UserDaoConstants.FIRST_NAME),
@@ -104,8 +107,8 @@ public class UserDao extends AbstractDao{
             return user;
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            throw new SQLException("UserDao#mapUser");
         }
-        return null;
+
     }
 }
