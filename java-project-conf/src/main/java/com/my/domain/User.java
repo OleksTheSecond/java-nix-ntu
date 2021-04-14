@@ -1,23 +1,23 @@
 package com.my.domain;
 
-public class User {
-    private int userId;
+public class User implements Entity{
+    private Long userId;
     private String firstName;
     private String lastName;
     private int roleId;
 
-    public User(int userId, String firstName, String lastName, int roleId) {
+    public User(Long userId, String firstName, String lastName, int roleId) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.roleId = roleId;
     }
 
-    public int getUserId() {
+    public Long getId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setId(Long userId) {
         this.userId = userId;
     }
 
