@@ -7,7 +7,7 @@ public interface UserDaoConstants {
     String ROLE_ID = "role_id";
 
 
-    String INSERT_USER = "INSERT INTO Users VALUES (?,?,?,?)";
+    String INSERT_USER = "INSERT INTO Users(first_name, last_name, role_id) VALUES (?,?,?)";
     String DELETE_USER = "DELETE FROM Users WHERE user_id = ?";
     String FIND_USER = "SELECT * FROM Users WHERE user_id = ?";
     String FIND_ALL = "SELECT * FROM Users";
