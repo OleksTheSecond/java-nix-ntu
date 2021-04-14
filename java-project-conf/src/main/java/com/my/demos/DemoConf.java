@@ -46,13 +46,13 @@ public class DemoConf {
             e.printStackTrace();
         }
 
-        Conference conference1 = new Conference(1, new Timestamp(timeStart[0].getTime()),
+        Conference conference1 = new Conference(1L, new Timestamp(timeStart[0].getTime()),
                 new Timestamp(timeEnd[0].getTime()), "Tyt#1", 0);
 
-        Conference conference2 = new Conference(2, new Timestamp(timeStart[1].getTime()),
+        Conference conference2 = new Conference(2L, new Timestamp(timeStart[1].getTime()),
                 new Timestamp(timeEnd[1].getTime()), "Tyt#2", 0);
 
-        Conference conference3 = new Conference(3, new Timestamp(timeStart[2].getTime()),
+        Conference conference3 = new Conference(3L, new Timestamp(timeStart[2].getTime()),
                 new Timestamp(timeEnd[2].getTime()), "Tyt#3", 0);
 
 
@@ -66,7 +66,7 @@ public class DemoConf {
         prinList(confDao.findAll());
 
         //Update
-        Conference toUpdate = new Conference(2, new Timestamp(startToUpdate.getTime()),
+        Conference toUpdate = new Conference(2L, new Timestamp(startToUpdate.getTime()),
                 new Timestamp(endToUpdate.getTime()), "Tyt#UPDATED", 0);
         confDao.update(toUpdate);
         System.out.println("#######################################");
@@ -74,13 +74,13 @@ public class DemoConf {
         System.out.println("#######################################");
 
         //Find by ID
-        Conference finded = (Conference) (confDao.findById(2));
+        Conference finded = (Conference) (confDao.findById(2L));
         System.out.println(finded);
 
         //Delete all
-        confDao.delete(conference1);
-        confDao.delete(conference2);
-        confDao.delete(conference3);
+//        confDao.deleteById(1L);
+//        confDao.deleteById(2L);
+//        confDao.deleteById(3L);
     }
 
 
