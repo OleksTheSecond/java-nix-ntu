@@ -6,7 +6,7 @@ public interface ReportDaoConstants {
     String USER_ID = "user_id";
     String CONF_ID = "conf_id";
 
-    String INSERT_REPORT = "INSERT INTO Reports VALUES(?,?,?,?);";
+    String INSERT_REPORT = "INSERT INTO Reports(report_title, user_id, conf_id) VALUES(?,?,?);";
     String DELETE_REPORT = "DELETE FROM Reports WHERE report_id = ?";
     String UPDATE_REPORT =
             "UPDATE Reports SET report_title = ?, user_id = ?, conf_id = ? WHERE report_id = ?;";
