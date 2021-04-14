@@ -17,13 +17,13 @@ public class DemoReport {
     public static void main(String[] args) throws SQLException {
         ReportDao reportDao = new ReportDao();
 
-        Report report1 = new Report(1, "Title#1", 2);
-        Report report2 = new Report(2, "Title#2", 1);
-        Report report3 = new Report(3, "Title#3", 1);
+        Report report1 = new Report(1L, "Title#1", 2L);
+        Report report2 = new Report(2L, "Title#2", 1L);
+        Report report3 = new Report(3L, "Title#3", 1L);
 
-        report1.setConferenceId(1);
-        report2.setConferenceId(2);
-        report3.setConferenceId(3);
+        report1.setConferenceId(1L);
+        report2.setConferenceId(2L);
+        report3.setConferenceId(3L);
 
         //Add to base
         reportDao.create(report1);
@@ -35,21 +35,20 @@ public class DemoReport {
         System.out.println("#################################");
 
         //Updaet second
-        Report toUpdate = new Report(2, "Title#UPDATED", 2);
-        toUpdate.setConferenceId(3);
+        Report toUpdate = new Report(2L, "Title#UPDATED", 2L);
+        toUpdate.setConferenceId(3L);
         reportDao.update(toUpdate);
         printList(reportDao.findAll());
         System.out.println("#################################");
 
         //Find by ID
-        Report finded = (Report)(reportDao.findById(2));
+        Report finded = (Report)(reportDao.findById(2L));
         System.out.println(finded);
 
         //Delete all
-        reportDao.delete(report1);
-        reportDao.delete(report2);
-        reportDao.delete(report3);
-
+//        reportDao.deleteById(1L);
+//        reportDao.deleteById(2L);
+//        reportDao.deleteById(3L);
 
 
     }
