@@ -16,14 +16,14 @@ public class DemoUser {
 
 
     public static void main(String[] args) throws SQLException {
-        User user1 = new User(1, "OleksII",
+        User user1 = new User(1L, "OleksII",
                 "Aleksieiev", Roles.MODERATOR.getRoleId());
 
 
-        User user2 = new User(2, "Aleks",
+        User user2 = new User(2L, "Aleks",
                 "Alekss", Roles.SPEAKER.getRoleId());
 
-        User user3 = new User(3, "Popka",
+        User user3 = new User(3L, "Popka",
                 "NeDyrak", Roles.LISTENER.getRoleId());
 
         UserDao userDao = new UserDao();
@@ -36,20 +36,20 @@ public class DemoUser {
         System.out.println("###########################################");
 
         //Update user
-        User toUpdate = new User(2, "AleksUpdated",
+        User toUpdate = new User(2L, "AleksUpdated",
                         "Up", Roles.LISTENER.getRoleId());
 
         userDao.update(toUpdate);
         printList(userDao.findAll());
         System.out.println("###########################################");
         //Find by ID
-        User finded = (User) (userDao.findById(2));
+        User finded = (userDao.findById(2L));
         System.out.println(finded);
         System.out.println("###########################################");
 
         //Delete all
-        userDao.delete(user1);
-        userDao.delete(user2);
-        userDao.delete(user3);
+//        userDao.deleteById(1L);
+//        userDao.deleteById(2L);
+//        userDao.deleteById(3L);
     }
 }
