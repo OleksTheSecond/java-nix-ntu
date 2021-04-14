@@ -1,12 +1,12 @@
 package com.my.domain;
 
-public class Report {
-    private int id;
+public class Report implements Entity{
+    private Long id;
     private String title;
-    private int userId;
-    private int conferenceId;
+    private Long userId;
+    private Long conferenceId;
 
-    public Report(int id, String title, int userId) {
+    public Report(Long id, String title, Long userId) {
         this.id = id;
         this.title = title;
         this.userId = userId;
@@ -21,27 +21,27 @@ public class Report {
     }
 
 
-    public int getConferenceId() {
+    public Long getConferenceId() {
         return conferenceId;
     }
 
-    public void setConferenceId(int conferenceId) {
+    public void setConferenceId(Long conferenceId) {
         this.conferenceId = conferenceId;
     }
 
-    public int getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public int getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 
