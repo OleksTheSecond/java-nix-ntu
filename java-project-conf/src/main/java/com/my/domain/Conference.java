@@ -2,14 +2,14 @@ package com.my.domain;
 
 import java.sql.Timestamp;
 
-public class Conference {
-    private int confId;
+public class Conference implements Entity {
+    private Long confId;
     private Timestamp startTime;
     private Timestamp endTime;
     private String place;
     private int reportsCount;
 
-    public Conference(int confId, Timestamp startTime, Timestamp endTime, String place, int reportsCount) {
+    public Conference(Long confId, Timestamp startTime, Timestamp endTime, String place, int reportsCount) {
         this.confId = confId;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -17,11 +17,11 @@ public class Conference {
         this.reportsCount = reportsCount;
     }
 
-    public int getConfId() {
+    public Long getId() {
         return confId;
     }
 
-    public void setConfId(int confId) {
+    public void setId(Long confId) {
         this.confId = confId;
     }
 
