@@ -3,112 +3,78 @@ package com.my.dao;
 
 import com.my.constants.ReportDaoConstants;
 import com.my.domain.Report;
+import jdk.javadoc.doclet.Reporter;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ReportDao extends AbstractDao{
+public class ReportDao extends AbstractDao<Report>{
 
-    public boolean create(Object obj) throws SQLException {
-        Report report = (Report) obj;
-
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement =
-                     connection.prepareStatement(ReportDaoConstants.INSERT_REPORT)){
-
-            preparedStatement.setInt(1, report.getId());
-            preparedStatement.setString(2, report.getTitle());
-            preparedStatement.setInt(3, report.getUserId());
-            preparedStatement.setInt(4, report.getConferenceId());
-            preparedStatement.execute();
-            return true;
-        }
-        catch (SQLException ex) {
-           throw new SQLException("Exception in ReportDao#create");
-
-        }
-
+    @Override
+    protected String getFindByIdSql() {
+        return ReportDaoConstants.FIND_REPORT;
     }
 
-    public boolean update(Object obj) throws SQLException {
-        Report report = (Report) obj;
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement =
-                     connection.prepareStatement(ReportDaoConstants.UPDATE_REPORT)) {
-
-            preparedStatement.setString(1, report.getTitle());
-            preparedStatement.setInt(2, report.getUserId());
-            preparedStatement.setInt(3, report.getConferenceId());
-            preparedStatement.setInt(4, report.getId());
-            preparedStatement.execute();
-            return true;
-        }
-        catch (SQLException e) {
-            throw new SQLException("Exception in ReportDao#update");
-        }
-
+    @Override
+    protected String getCreateSql() {
+        return ReportDaoConstants.INSERT_REPORT;
     }
 
-    public boolean delete(Object obj) throws SQLException {
-        int id = ((Report) obj).getId();
-        try (Connection connection = getConnection();
-             PreparedStatement preparedStatement =
-                     connection.prepareStatement(ReportDaoConstants.DELETE_REPORT)) {
-            preparedStatement.setInt(1, id);
-            preparedStatement.execute();
-            return true;
-        }
-        catch (SQLException e) {
-            throw new SQLException("Exception in ReportDao#delete");
-        }
-
+    @Override
+    protected String getUpdateSql() {
+        return ReportDaoConstants.UPDATE_REPORT;
     }
 
-    public Object findById(int id) throws SQLException {
-        ResultSet resultSet = null;
-        try(Connection connection = getConnection();
-            PreparedStatement preparedStatement =
-                    connection.prepareStatement(ReportDaoConstants.FIND_REPORT)) {
-            preparedStatement.setInt(1, id);
-            resultSet = preparedStatement.executeQuery();
-            resultSet.next();
-            return mapReport(resultSet);
-        }
-        catch (SQLException e) {
-            throw new SQLException("Exception in ReportDao#findById");
-        }
-        finally {
-            resultSet.close();
-        }
+    @Override
+    protected String getDeleteSql() {
+        return ReportDaoConstants.DELETE_REPORT;
     }
 
-    public List findAll() throws SQLException {
-        List<Report> reportList = new ArrayList<>();
-        try (Connection connection = getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(ReportDaoConstants.FIND_ALL)) {
+    @Override
+    protected String getFindAllSql() {
+        return ReportDaoConstants.FIND_ALL;
+    }
 
-            while (resultSet.next()) {
-                reportList.add(mapReport(resultSet));
+
+    @Override
+    protected EntityMapper<Report> getEntityMapper() throws SQLException {
+        return new EntityMapper<Report>() {
+
+            @Override
+            public Report fromResultSet(ResultSet resultSet) throws SQLException {
+                return mapReport(resultSet);
             }
 
-            return reportList;
-        }
-        catch (SQLException e) {
-            throw new SQLException("Exception in ReportDao#findAll");
-        }
+            @Override
+            public void fillCreateStatement(PreparedStatement statement,
+                                            Report entity) throws SQLException {
+                statement = fillStatement(statement,entity);
+            }
+
+            @Override
+            public void fillUpdateStatement(PreparedStatement statement, Report entity) throws SQLException {
+                statement = fillStatement(statement,entity);
+                statement.setLong(4, entity.getId());
+            }
+
+            private PreparedStatement fillStatement(PreparedStatement st, Report entity) throws SQLException {
+                st.setString(1, entity.getTitle());
+                st.setLong(2, entity.getUserId());
+                st.setLong(3, entity.getConferenceId());
+                return st;
+            }
+        };
     }
 
     private Report mapReport(ResultSet resultSet) throws SQLException {
         try {
-            Report report = new Report(resultSet.getInt(ReportDaoConstants.REPORT_ID),
-                                       resultSet.getString(ReportDaoConstants.REPORT_TITLE),
-                                       resultSet.getInt(ReportDaoConstants.USER_ID));
-            report.setConferenceId(resultSet.getInt(ReportDaoConstants.CONF_ID));
+            Report report = new Report(resultSet.getLong(ReportDaoConstants.REPORT_ID),
+                    resultSet.getString(ReportDaoConstants.REPORT_TITLE),
+                    resultSet.getLong(ReportDaoConstants.USER_ID));
+            report.setConferenceId(resultSet.getLong(ReportDaoConstants.CONF_ID));
             return report;
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new SQLException("Exception in ReportDao#mapReport");
         }
     }
