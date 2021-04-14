@@ -7,7 +7,7 @@ public interface ConfDaoConstants {
     String PLACE = "place";
     String RPEORTS_COUNT = "reports_count";
 
-    String INSERT_CONF = "INSERT INTO Conferences VALUES(?,?,?,?,?);";
+    String INSERT_CONF = "INSERT INTO Conferences(start_time, end_time, place, reports_count) VALUES(?,?,?,?);";
     String DELETE_CONF = "DELETE FROM Conferences WHERE conf_id = ?";
     String UPDATE_CONF =
             "UPDATE Conferences SET start_time = ?, end_time = ?, place = ? WHERE conf_id = ?";
